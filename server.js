@@ -8,6 +8,9 @@ const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
 
+// Serve existing frontend files
+app.use(express.static(__dirname));
+
 // Load P2P data
 const dataPath = path.join(__dirname, "data.json");
 
@@ -17,16 +20,13 @@ try {
   data = JSON.parse(fs.readFileSync(dataPath, "utf8"));
   console.log("P2P data loaded successfully");
 } catch (error) {
-  console.error("Failed to load p2pData.json:", error);
+  console.error("Failed to load data.json:", error);
   process.exit(1);
 }
 
-// Health check
+// Serve index.html
 app.get("/", (req, res) => {
-  res.json({
-    message: "P2P Three-Way Match Workbench API is running",
-    status: "success"
-  });
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // Complete P2P data
