@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 10000;
 app.use(express.json());
 
 // Load P2P data
-const dataPath = path.join(__dirname, "p2pData.json");
+const dataPath = path.join(__dirname, "Data.json");
 
 let data;
 
