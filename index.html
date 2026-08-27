@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>P2P Control Tower</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 64px;
+      background: #0b3558;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: white;
+      color: #0b3558;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+    }
+
+    .brand h1 {
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .brand p {
+      font-size: 11px;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .header-right {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1500px;
+      margin: auto;
+      padding: 24px;
+    }
+
+    .page-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+    }
+
+    .page-heading h2 {
+      font-size: 27px;
+      color: #111827;
+    }
+
+    .page-heading p {
+      margin-top: 5px;
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .process {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .process-step {
+      min-width: 120px;
+      text-align: center;
+      font-size: 12px;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    .process-step.active {
+      color: #0b6bcb;
+    }
+
+    .process-icon {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 5px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #eef2f7;
+    }
+
+    .process-step.active .process-icon {
+      background: #dbeafe;
+      color: #0b6bcb;
+    }
+
+    .arrow {
+      color: #9ca3af;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(6, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 17px;
+      min-height: 105px;
+    }
+
+    .kpi-label {
+      color: #6b7280;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .kpi-value {
+      font-size: 25px;
+      font-weight: 750;
+      margin-top: 10px;
+      color: #111827;
+    }
+
+    .kpi-sub {
+      margin-top: 5px;
+      color: #9ca3af;
+      font-size: 11px;
+    }
+
+    .controls {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search {
+      flex: 1;
+      min-width: 240px;
+      padding: 10px 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      outline: none;
+    }
+
+    .search:focus {
+      border-color: #0b6bcb;
+      box-shadow: 0 0 0 2px rgba(11,107,203,0.1);
+    }
+
+    .filter {
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      background: white;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 7px;
+      padding: 10px 14px;
+      font-weight: 650;
+      font-size: 12px;
+    }
+
+    .btn-primary {
+      background: #0b6bcb;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #eef2f7;
+      color: #1f2937;
+    }
+
+    .btn-success {
+      background: #15803d;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #b91c1c;
+      color: white;
+    }
+
+    .btn-warning {
+      background: #d97706;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .table-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #6b7280;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      text-align: left;
+      padding: 13px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    td {
+      padding: 14px 13px;
+      border-bottom: 1px solid #eef0f3;
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    tbody tr {
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .po-link {
+      color: #0b6bcb;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .supplier {
+      font-weight: 600;
+    }
+
+    .small {
+      color: #6b7280;
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .badge-green {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-yellow {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-red {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-blue {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .badge-gray {
+      background: #e5e7eb;
+      color: #4b5563;
+    }
+
+    .risk {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .risk-bar {
+      width: 60px;
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .risk-fill {
+      height: 100%;
+      background: currentColor;
+    }
+
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.45);
+      display: none;
+      z-index: 20;
+    }
+
+    .drawer-overlay.open {
+      display: block;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(680px, 100%);
+      height: 100vh;
+      background: white;
+      z-index: 21;
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      overflow-y: auto;
+      box-shadow: -5px 0 20px rgba(0,0,0,0.15);
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 20px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 2;
+    }
+
+    .drawer-header h3 {
+      font-size: 21px;
+    }
+
+    .close {
+      border: 0;
+      background: #f1f5f9;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+    }
+
+    .drawer-body {
+      padding: 20px;
+    }
+
+    .decision-box {
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 18px;
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+    }
+
+    .decision-title {
+      font-weight: 750;
+      color: #1e3a8a;
+    }
+
+    .decision-reason {
+      margin-top: 7px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #374151;
+    }
+
+    .section {
+      margin-top: 20px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 750;
+      margin-bottom: 10px;
+      color: #374151;
+    }
+
+    .object-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .field {
+      background: #f8fafc;
+      border-radius: 7px;
+      padding: 10px;
+    }
+
+    .field-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      font-weight: 700;
+    }
+
+    .field-value {
+      font-size: 13px;
+      font-weight: 650;
+      margin-top: 4px;
+    }
+
+    .reason-list {
+      list-style: none;
+    }
+
+    .reason-list li {
+      padding: 10px;
+      border-left: 3px solid #dc2626;
+      background: #fff7f7;
+      margin-bottom: 7px;
+      font-size: 12px;
+    }
+
+    .warning-list li {
+      border-left-color: #d97706;
+      background: #fffbeb;
+    }
+
+    .comparison {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+    }
+
+    .comparison td,
+    .comparison th {
+      padding: 9px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .note {
+      width: 100%;
+      min-height: 80px;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      margin-top: 10px;
+      resize: vertical;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      padding: 13px 16px;
+      border-radius: 8px;
+      background: #111827;
+      color: white;
+      font-size: 13px;
+      display: none;
+      z-index: 50;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.2);
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    .toast.error {
+      background: #991b1b;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 55px 20px;
+      color: #6b7280;
+    }
+
+    .empty strong {
+      display: block;
+      font-size: 17px;
+      color: #374151;
+      margin-bottom: 5px;
+    }
+
+    .loading {
+      padding: 50px;
+      text-align: center;
+      color: #6b7280;
+    }
+
+    .legend {
+      display: flex;
+      gap: 15px;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 1100px) {
+      .kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .table-card {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 1000px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        padding: 14px;
+      }
+
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .header-right {
+        display: none;
+      }
+
+      .page-heading {
+        display: block;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .object-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .process {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo">P2P</div>
+
+        <div>
+          <h1>Procure-to-Pay Control Tower</h1>
+          <p>Three-Way Match & Goods Receipt Exception Workbench</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        SAP-aligned procurement operations
+      </div>
+    </header>
+
+    <main class="container">
+
+      <div class="page-heading">
+        <div>
+          <h2>P2P Exception Workbench</h2>
+          <p>
+            Identify GR discrepancies before invoices are paid.
+          </p>
+        </div>
+
+        <div class="legend">
+          <span>
+            <i class="dot" style="background:#16a34a"></i>
+            Matched
+          </span>
+
+          <span>
+            <i class="dot" style="background:#d97706"></i>
+            Review
+          </span>
+
+          <span>
+            <i class="dot" style="background:#dc2626"></i>
+            Blocked
+          </span>
+        </div>
+      </div>
+
+      <div class="process">
+
+        <div class="process-step">
+          <div class="process-icon">1</div>
+          Purchase Requisition
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="process-step">
+          <div class="process-icon">2</div>
+          Purchase Order
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="process-step active">
+          <div class="process-icon">3</div>
+          Goods Receipt
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="process-step active">
+          <div class="process-icon">4</div>
+          Invoice
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="process-step active">
+          <div class="process-icon">5</div>
+          3-Way Match
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="process-step">
+          <div class="process-icon">6</div>
+          Payment
+        </div>
+
+      </div>
+
+      <section class="kpi-grid">
+
+        <div class="kpi">
+          <div class="kpi-label">OPEN POs</div>
+          <div class="kpi-value" id="kpiPO">—</div>
+          <div class="kpi-sub">Procurement workload</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-label">3-WAY MATCH RATE</div>
+          <div class="kpi-value" id="kpiMatch">—</div>
+          <div class="kpi-sub">PO / GR / Invoice</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-label">EXCEPTION RATE</div>
+          <div class="kpi-value" id="kpiException">—</div>
+          <div class="kpi-sub">Requires intervention</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-label">BLOCKED VALUE</div>
+          <div class="kpi-value" id="kpiBlocked">—</div>
+          <div class="kpi-sub">Invoice value at risk</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-label">AVG GR → INVOICE</div>
+          <div class="kpi-value" id="kpiCycle">—</div>
+          <div class="kpi-sub">Days</div>
+        </div>
+
+        <div class="kpi">
+          <div class="kpi-label">DISCOUNT OPPORTUNITY</div>
+          <div class="kpi-value" id="kpiDiscount">—</div>
+          <div class="kpi-sub">Potential cash saving</div>
+        </div>
+
+      </section>
+
+      <div class="controls">
+
+        <input
+          id="search"
+          class="search"
+          placeholder="Search PO, supplier, material or invoice..."
+        />
+
+        <select id="statusFilter" class="filter">
+          <option value="ALL">All statuses</option>
+          <option value="MATCHED">Matched</option>
+          <option value="REVIEW">Review</option>
+          <option value="BLOCKED">Blocked</option>
+        </select>
+
+        <button
+          class="btn btn-primary"
+          onclick="loadAll()"
+        >
+          Refresh
+        </button>
+
+      </div>
+
+      <div class="table-card">
+        <div id="tableContent">
+          <div class="loading">
+            Loading P2P exceptions...
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div
+    id="overlay"
+    class="drawer-overlay"
+    onclick="closeDrawer()"
+  ></div>
+
+  <aside id="drawer" class="drawer">
+
+    <div class="drawer-header">
+      <div>
+        <h3 id="drawerTitle">PO Details</h3>
+        <div id="drawerSubtitle" class="small"></div>
+      </div>
+
+      <button
+        class="close"
+        onclick="closeDrawer()"
+      >
+        ×
+      </button>
+    </div>
+
+    <div id="drawerBody" class="drawer-body"></div>
+
+  </aside>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    let cases = [];
+    let selectedCase = null;
+
+    const money = value =>
+      new Intl.NumberFormat("en-IN", {
+        style: "currency",
+        currency: "INR",
+        maximumFractionDigits: 0
+      }).format(Number(value || 0));
+
+    function statusBadge(status) {
+      if (status === "MATCHED") {
+        return `<span class="badge badge-green">MATCHED</span>`;
+      }
+
+      if (status === "REVIEW") {
+        return `<span class="badge badge-yellow">REVIEW</span>`;
+      }
+
+      if (status === "BLOCKED") {
+        return `<span class="badge badge-red">BLOCKED</span>`;
+      }
+
+      return `<span class="badge badge-gray">${status}</span>`;
+    }
+
+    function riskBadge(risk) {
+      let cls = "badge-green";
+
+      if (risk >= 70) {
+        cls = "badge-red";
+      } else if (risk >= 35) {
+        cls = "badge-yellow";
+      }
+
+      return `
+        <div class="risk">
+          <span class="badge ${cls}">
+            ${risk}
+          </span>
+
+          <div class="risk-bar">
+            <div
+              class="risk-fill"
+              style="
+                width:${risk}%;
+                color:${
+                  risk >= 70
+                    ? "#dc2626"
+                    : risk >= 35
+                    ? "#d97706"
+                    : "#16a34a"
+                };
+                background:currentColor;
+              "
+            ></div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showToast(message, error = false) {
+      const toast = document.getElementById("toast");
+
+      toast.textContent = message;
+      toast.className =
+        "toast show" + (error ? " error" : "");
+
+      setTimeout(() => {
+        toast.className = "toast";
+      }, 3000);
+    }
+
+    async function fetchJSON(url, options = {}) {
+      const response = await fetch(url, options);
+
+      let data;
+
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error(
+          "Server returned an invalid response."
+        );
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Request failed"
+        );
+      }
+
+      return data;
+    }
+
+    async function loadDashboard() {
+      try {
+        const data =
+          await fetchJSON("/api/dashboard");
+
+        document.getElementById("kpiPO").textContent =
+          data.totalPOs;
+
+        document.getElementById("kpiMatch").textContent =
+          data.threeWayMatchRate.toFixed(1) + "%";
+
+        document.getElementById("kpiException").textContent =
+          data.exceptionRate.toFixed(1) + "%";
+
+        document.getElementById("kpiBlocked").textContent =
+          money(data.exceptionValue);
+
+        document.getElementById("kpiCycle").textContent =
+          data.averageCycleTime.toFixed(1);
+
+        document.getElementById("kpiDiscount").textContent =
+          money(data.discountOpportunity);
+
+      } catch (error) {
+        showToast(
+          "Unable to load dashboard: " + error.message,
+          true
+        );
+      }
+    }
+
+    async function loadCases() {
+      const search =
+        document.getElementById("search").value;
+
+      const status =
+        document.getElementById("statusFilter").value;
+
+      document.getElementById("tableContent").innerHTML =
+        `<div class="loading">Loading cases...</div>`;
+
+      try {
+        cases = await fetchJSON(
+          `/api/cases?status=${encodeURIComponent(status)}&search=${encodeURIComponent(search)}`
+        );
+
+        renderTable();
+
+      } catch (error) {
+        document.getElementById("tableContent").innerHTML = `
+          <div class="empty">
+            <strong>Unable to load data</strong>
+            ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    function renderTable() {
+
+      if (!cases.length) {
+        document.getElementById("tableContent").innerHTML = `
+          <div class="empty">
+            <strong>No matching P2P cases</strong>
+            Try another search or status filter.
+          </div>
+        `;
+
+        return;
+      }
+
+      const rows = cases.map(item => {
+
+        const po = item.po;
+        const gr = item.gr;
+        const invoice = item.invoice;
+        const match = item.match;
+
+        return `
+          <tr>
+
+            <td>
+              <span
+                class="po-link"
+                onclick="openCase('${po.poId}')"
+              >
+                ${po.poId}
+              </span>
+
+              <div class="small">
+                ${po.poDate}
+              </div>
+            </td>
+
+            <td>
+              <div class="supplier">
+                ${po.supplier}
+              </div>
+
+              <div class="small">
+                ${po.supplierId}
+              </div>
+            </td>
+
+            <td>
+              ${po.material}
+
+              <div class="small">
+                ${po.materialId}
+              </div>
+            </td>
+
+            <td>
+              ${po.orderedQty.toLocaleString()}
+            </td>
+
+            <td>
+              ${
+                gr
+                  ? gr.receivedQty.toLocaleString()
+                  : "—"
+              }
+
+              ${
+                gr &&
+                gr.receivedQty !== po.orderedQty
+                  ? `
+                    <div class="small">
+                      ${
+                        gr.receivedQty > po.orderedQty
+                          ? "Over"
+                          : "Under"
+                      } delivery
+                    </div>
+                  `
+                  : ""
+              }
+            </td>
+
+            <td>
+              ${
+                invoice
+                  ? invoice.invoiceQty.toLocaleString()
+                  : "—"
+              }
+            </td>
+
+            <td>
+              ${
+                invoice
+                  ? money(
+                      invoice.invoiceQty *
+                      invoice.unitPrice
+                    )
+                  : "—"
+              }
+            </td>
+
+            <td>
+              ${statusBadge(match.status)}
+            </td>
+
+            <td>
+              ${riskBadge(match.risk)}
+            </td>
+
+            <td>
+              <button
+                class="btn btn-secondary"
+                onclick="openCase('${po.poId}')"
+              >
+                Review
+              </button>
+            </td>
+
+          </tr>
+        `;
+      }).join("");
+
+      document.getElementById("tableContent").innerHTML = `
+        <table>
+
+          <thead>
+            <tr>
+              <th>PO</th>
+              <th>Supplier</th>
+              <th>Material</th>
+              <th>PO Qty</th>
+              <th>GR Qty</th>
+              <th>Invoice Qty</th>
+              <th>Invoice Value</th>
+              <th>Status</th>
+              <th>Risk</th>
+              <th>Decision</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${rows}
+          </tbody>
+
+        </table>
+      `;
+    }
+
+    async function openCase(poId) {
+
+      try {
+
+        const item =
+          await fetchJSON(`/api/cases/${poId}`);
+
+        selectedCase = item;
+
+        document.getElementById("drawerTitle").textContent =
+          item.po.poId;
+
+        document.getElementById("drawerSubtitle").textContent =
+          `${item.po.supplier} · ${item.po.material}`;
+
+        renderDrawer(item);
+
+        document
+          .getElementById("overlay")
+          .classList.add("open");
+
+        document
+          .getElementById("drawer")
+          .classList.add("open");
+
+      } catch (error) {
+        showToast(
+          error.message,
+          true
+        );
+      }
+    }
+
+    function renderDrawer(item) {
+
+      const po = item.po;
+      const gr = item.gr;
+      const invoice = item.invoice;
+      const match = item.match;
+      const rec = item.recommendation;
+
+      const reasons = match.reasons.length
+        ? `
+          <div class="section">
+            <div class="section-title">
+              Blocking reasons
+            </div>
+
+            <ul class="reason-list">
+              ${match.reasons.map(
+                r => `<li>${r}</li>`
+              ).join("")}
+            </ul>
+          </div>
+        `
+        : "";
+
+      const warnings = match.warnings.length
+        ? `
+          <div class="section">
+            <div class="section-title">
+              Warnings
+            </div>
+
+            <ul class="reason-list warning-list">
+              ${match.warnings.map(
+                r => `<li>${r}</li>`
+              ).join("")}
+            </ul>
+          </div>
+        `
+        : "";
+
+      document.getElementById("drawerBody").innerHTML = `
+
+        <div class="decision-box">
+
+          <div class="decision-title">
+            Decision Support Recommendation:
+            ${rec.action}
+          </div>
+
+          <div class="decision-reason">
+            ${rec.reason}
+          </div>
+
+          <div class="small">
+            Confidence:
+            ${(rec.confidence * 100).toFixed(0)}%
+            · Risk score: ${match.risk}/100
+          </div>
+
+        </div>
+
+        <div class="section">
+
+          <div class="section-title">
+            SAP Document Flow
+          </div>
+
+          <div class="object-grid">
+
+            <div class="field">
+              <div class="field-label">
+                Purchase Requisition
+              </div>
+
+              <div class="field-value">
+                ${po.prId || "—"}
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                Purchase Order
+              </div>
+
+              <div class="field-value">
+                ${po.poId}
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                Goods Receipt
+              </div>
+
+              <div class="field-value">
+                ${gr ? gr.grId : "Not posted"}
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                Supplier Invoice
+              </div>
+
+              <div class="field-value">
+                ${
+                  invoice
+                    ? invoice.invoiceId
+                    : "Not received"
+                }
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="section">
+
+          <div class="section-title">
+            Three-Way Match
+          </div>
+
+          <table class="comparison">
+
+            <thead>
+              <tr>
+                <th>Check</th>
+                <th>PO</th>
+                <th>GR</th>
+                <th>Invoice</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td>Quantity</td>
+                <td>${po.orderedQty}</td>
+                <td>${gr?.receivedQty ?? "—"}</td>
+                <td>${invoice?.invoiceQty ?? "—"}</td>
+              </tr>
+
+              <tr>
+                <td>Supplier</td>
+                <td>${po.supplier}</td>
+                <td>${gr?.supplier ?? "—"}</td>
+                <td>${invoice?.supplier ?? "—"}</td>
+              </tr>
+
+              <tr>
+                <td>Material</td>
+                <td>${po.materialId}</td>
+                <td>${gr?.materialId ?? "—"}</td>
+                <td>${invoice?.materialId ?? "—"}</td>
+              </tr>
+
+              <tr>
+                <td>Unit Price</td>
+                <td>${money(po.unitPrice)}</td>
+                <td>—</td>
+                <td>
+                  ${
+                    invoice
+                      ? money(invoice.unitPrice)
+                      : "—"
+                  }
+                </td>
+              </tr>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+        ${reasons}
+
+        ${warnings}
+
+        <div class="section">
+
+          <div class="section-title">
+            Validation & Tolerance
+          </div>
+
+          <div class="object-grid">
+
+            <div class="field">
+              <div class="field-label">
+                Quantity tolerance
+              </div>
+
+              <div class="field-value">
+                ${item.tolerance.quantityTolerancePercent}%
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                Price tolerance
+              </div>
+
+              <div class="field-value">
+                ${item.tolerance.priceTolerancePercent}%
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                Quantity variance
+              </div>
+
+              <div class="field-value">
+                ${match.quantityVarianceFromPO.toFixed(2)}%
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                Price variance
+              </div>
+
+              <div class="field-value">
+                ${match.priceVariance.toFixed(2)}%
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="section">
+
+          <div class="section-title">
+            Invoice / OCR Control
+          </div>
+
+          <div class="object-grid">
+
+            <div class="field">
+              <div class="field-label">
+                OCR confidence
+              </div>
+
+              <div class="field-value">
+                ${
+                  invoice
+                    ? (
+                        invoice.ocrConfidence *
+                        100
+                      ).toFixed(0) + "%"
+                    : "—"
+                }
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                Early discount
+              </div>
+
+              <div class="field-value">
+                ${money(item.earlyDiscount)}
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                Contract status
+              </div>
+
+              <div class="field-value">
+                ${
+                  item.maverick
+                    ? "Off-contract"
+                    : "Contracted"
+                }
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="field-label">
+                GR → Invoice
+              </div>
+
+              <div class="field-value">
+                ${
+                  item.cycleTime === null
+                    ? "Pending"
+                    : item.cycleTime + " days"
+                }
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="section">
+
+          <div class="section-title">
+            Human Decision
+          </div>
+
+          <textarea
+            id="decisionNote"
+            class="note"
+            placeholder="Enter override / review note when required..."
+          ></textarea>
+
+          <div class="action-row">
+
+            <button
+              class="btn btn-success"
+              onclick="takeAction('APPROVE')"
+            >
+              Approve
+            </button>
+
+            <button
+              class="btn btn-warning"
+              onclick="takeAction('HOLD')"
+            >
+              Hold
+            </button>
+
+            <button
+              class="btn btn-danger"
+              onclick="takeAction('REJECT')"
+            >
+              Reject
+            </button>
+
+            <button
+              class="btn btn-secondary"
+              onclick="takeAction('ESCALATE')"
+            >
+              Escalate
+            </button>
+
+            <button
+              class="btn btn-primary"
+              onclick="takeAction('PARTIAL')"
+            >
+              Partial Receipt
+            </button>
+
+          </div>
+
+        </div>
+      `;
+    }
+
+    async function takeAction(action) {
+
+      if (!selectedCase) {
+        return;
+      }
+
+      const note =
+        document.getElementById(
+          "decisionNote"
+        )?.value || "";
+
+      try {
+
+        await fetchJSON(
+          `/api/cases/${selectedCase.po.poId}/action`,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              action,
+              note
+            })
+          }
+        );
+
+        showToast(
+          `${action} action recorded successfully.`
+        );
+
+        closeDrawer();
+
+        await loadAll();
+
+      } catch (error) {
+
+        showToast(
+          error.message,
+          true
+        );
+      }
+    }
+
+    function closeDrawer() {
+
+      document
+        .getElementById("overlay")
+        .classList.remove("open");
+
+      document
+        .getElementById("drawer")
+        .classList.remove("open");
+
+      selectedCase = null;
+    }
+
+    async function loadAll() {
+      await loadDashboard();
+      await loadCases();
+    }
+
+    let searchTimer;
+
+    document
+      .getElementById("search")
+      .addEventListener("input", () => {
+
+        clearTimeout(searchTimer);
+
+        searchTimer = setTimeout(
+          loadCases,
+          250
+        );
+      });
+
+    document
+      .getElementById("statusFilter")
+      .addEventListener(
+        "change",
+        loadCases
+      );
+
+    loadAll();
+  </script>
+
+</body>
+</html>
