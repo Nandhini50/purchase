@@ -1,0 +1,15 @@
+{
+  "name": "p2p-three-way-match-workbench",
+  "version": "1.0.0",
+  "description": "SAP-aligned P2P three-way match and goods receipt discrepancy workbench",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
